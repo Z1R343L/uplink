@@ -1,11 +1,10 @@
 class AnnotationMeta(type):
     def __call__(cls, *args, **kwargs):
-        if cls._can_be_static and cls._is_static_call(*args, **kwargs):
-            self = super(AnnotationMeta, cls).__call__()
-            self(args[0])
-            return args[0]
-        else:
+        if not cls._can_be_static or not cls._is_static_call(*args, **kwargs):
             return super(AnnotationMeta, cls).__call__(*args, **kwargs)
+        self = super(AnnotationMeta, cls).__call__()
+        self(args[0])
+        return args[0]
 
 
 class _Annotation(object):
@@ -21,7 +20,7 @@ class _Annotation(object):
         except IndexError:
             return False
         else:
-            return is_builder and not (kwargs or args[1:])
+            return is_builder and not kwargs and not args[1:]
 
 
 Annotation = AnnotationMeta("Annotation", (_Annotation,), {})

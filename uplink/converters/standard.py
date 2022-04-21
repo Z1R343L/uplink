@@ -24,6 +24,4 @@ class StandardConverter(interfaces.Factory):
             return cls
 
     def create_string_converter(self, cls, *args, **kwargs):
-        if isinstance(cls, interfaces.Converter):
-            return cls
-        return StringConverter()
+        return cls if isinstance(cls, interfaces.Converter) else StringConverter()

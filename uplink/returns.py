@@ -183,11 +183,9 @@ class json(_ReturnsBase):
         return self._type
 
     def _get_converter(self, request_builder, return_type):
-        converter = super(json, self)._get_converter(
+        if converter := super(json, self)._get_converter(
             request_builder, return_type
-        )
-
-        if converter:
+        ):
             return converter
 
         if callable(return_type.type):

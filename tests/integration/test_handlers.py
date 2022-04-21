@@ -87,7 +87,7 @@ def test_response_handler_with_consumer(mock_client):
     calendar.get_todo(todo_id=1)
 
     # Verify
-    assert calendar.flagged is True
+    assert calendar.flagged
 
 
 def test_response_handler(mock_client):
@@ -124,7 +124,7 @@ def test_error_handler_with_consumer(mock_client):
         calendar.get_user(user_id=1)
     except WrappedException as err:
         assert err.exception == expected_error
-        assert calendar.flagged is True
+        assert calendar.flagged
     else:
         raise AssertionError
 

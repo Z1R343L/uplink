@@ -6,7 +6,13 @@ import re
 
 def is_appropriate_tag(version, tag):
     # Make sure the tag version and version in __about__.py match
-    return re.match(r'^' + tag + r'(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$', "v" + version) is not None
+    return (
+        re.match(
+            f'^{tag}' + r'(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$',
+            f"v{version}",
+        )
+        is not None
+    )
 
 
 def is_canonical(version):
@@ -14,7 +20,7 @@ def is_canonical(version):
 
 
 def _get_current_version():
-    about = dict()
+    about = {}
     with open(os.path.join("uplink", "__about__.py")) as fp:
         exec(fp.read(), about)
     return about.get("__version__", None)
@@ -26,7 +32,10 @@ def verify_version(tag):
     assert version is not None, "The version is not defined in uplink/__about__.py."
     assert tag is not None, "The tag is not defined."
     assert is_canonical(version), "The version string [%s] violates PEP-440"
-    assert is_appropriate_tag(version, tag), "The tag [%s] does not match the current version in uplink/__about__.py [%s]" % (tag, version)
+    assert is_appropriate_tag(
+        version, tag
+    ), f"The tag [{tag}] does not match the current version in uplink/__about__.py [{version}]"
+
     return version
 
 

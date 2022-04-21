@@ -254,14 +254,13 @@ class FuncDecoratorMixin(object):
         except IndexError:
             return False
         else:
-            return is_func and not (kwargs or args_[1:])
+            return is_func and not kwargs and not args_[1:]
 
     def __call__(self, obj):
-        if inspect.isfunction(obj):
-            ArgumentAnnotationHandlerBuilder.from_func(obj).add_annotation(self)
-            return obj
-        else:
+        if not inspect.isfunction(obj):
             return super(FuncDecoratorMixin, self).__call__(obj)
+        ArgumentAnnotationHandlerBuilder.from_func(obj).add_annotation(self)
+        return obj
 
     def with_value(self, value):
         """
@@ -385,7 +384,7 @@ class Query(FuncDecoratorMixin, EncodeNoneMixin, NamedArgument):
         # TODO: Consider moving some of this to the client backend.
         if encoded:
             params = [] if existing is None else [str(existing)]
-            params.extend("%s=%s" % (n, new_params[n]) for n in new_params)
+            params.extend(f"{n}={new_params[n]}" for n in new_params)
             info["params"] = "&".join(params)
         else:
             info["params"].update(new_params)

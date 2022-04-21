@@ -132,5 +132,5 @@ def test_returns_JsonStrategy(mocker):
     converter = returns.JsonStrategy(lambda x: x, "hello")
     assert converter(response) == "world"
 
-    converter = returns.JsonStrategy(lambda y: y + "!", "hello")
+    converter = returns.JsonStrategy(lambda y: f"{y}!", "hello")
     assert converter(response) == "world!"

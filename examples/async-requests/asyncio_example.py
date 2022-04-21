@@ -10,10 +10,10 @@ from github import BASE_URL, GitHub
 
 
 async def get_contributors(full_name):
-    print("Getting GitHub repository `{}`".format(full_name))
+    print(f"Getting GitHub repository `{full_name}`")
     response = await gh_async.get_contributors(*full_name.split("/"))
     json = await response.json()
-    print("response for {}: {}".format(full_name, json))
+    print(f"response for {full_name}: {json}")
     return json
 
 

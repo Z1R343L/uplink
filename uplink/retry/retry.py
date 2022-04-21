@@ -129,19 +129,23 @@ class _RetryTemplate(RequestTemplate):
         return transitions.sleep(timeout)
 
     def after_response(self, request, response):
-        if not self._condition.should_retry_after_response(response):
-            return self._process_timeout(None)
-        return self._process_timeout(
-            self._backoff.get_timeout_after_response(request, response)
+        return (
+            self._process_timeout(
+                self._backoff.get_timeout_after_response(request, response)
+            )
+            if self._condition.should_retry_after_response(response)
+            else self._process_timeout(None)
         )
 
     def after_exception(self, request, exc_type, exc_val, exc_tb):
-        if not self._condition.should_retry_after_exception(
-            exc_type, exc_val, exc_tb
-        ):
-            return self._process_timeout(None)
-        return self._process_timeout(
-            self._backoff.get_timeout_after_exception(
-                request, exc_type, exc_val, exc_tb
+        return (
+            self._process_timeout(
+                self._backoff.get_timeout_after_exception(
+                    request, exc_type, exc_val, exc_tb
+                )
             )
+            if self._condition.should_retry_after_exception(
+                exc_type, exc_val, exc_tb
+            )
+            else self._process_timeout(None)
         )

@@ -65,8 +65,7 @@ class RequestPreparer(object):
 
     def prepare_request(self, request_builder, execution_builder):
         self._auth(request_builder)
-        request_hooks = self._get_request_hooks(request_builder)
-        if request_hooks:
+        if request_hooks := self._get_request_hooks(request_builder):
             chain = hooks_.TransactionHookChain(*request_hooks)
             chain.audit_request(self._consumer, request_builder)
             self.apply_hooks(execution_builder, chain)
@@ -250,18 +249,18 @@ class ConsumerMeta(type):
 
             namespace["__init__"] = new_init
 
-    def __new__(mcs, name, bases, namespace):
-        mcs._set_init_handler(namespace)
+    def __new__(cls, name, bases, namespace):
+        cls._set_init_handler(namespace)
 
         # Wrap all definition builders with a special descriptor that
         # handles attribute access behavior.
         for key, value in namespace.items():
-            namespace[key] = mcs._wrap_if_definition(name, key, value)
-        return super(ConsumerMeta, mcs).__new__(mcs, name, bases, namespace)
+            namespace[key] = cls._wrap_if_definition(name, key, value)
+        return super(ConsumerMeta, cls).__new__(cls, name, bases, namespace)
 
-    def __setattr__(cls, key, value):
-        value = cls._wrap_if_definition(cls.__name__, key, value)
-        super(ConsumerMeta, cls).__setattr__(key, value)
+    def __setattr__(self, key, value):
+        value = self._wrap_if_definition(self.__name__, key, value)
+        super(ConsumerMeta, self).__setattr__(key, value)
 
 
 _Consumer = ConsumerMeta("_Consumer", (), {})

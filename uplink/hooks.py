@@ -9,9 +9,7 @@ __all__ = ["TransactionHook", "RequestAuditor", "ResponseHandler"]
 
 
 def _wrap_if_necessary(hook, requires_consumer):
-    if not requires_consumer:
-        return _wrap_to_ignore_consumer(hook)
-    return hook
+    return hook if requires_consumer else _wrap_to_ignore_consumer(hook)
 
 
 def _wrap_to_ignore_consumer(hook):
