@@ -26,8 +26,8 @@ __all__ = [
 
 class MethodAnnotationHandlerBuilder(interfaces.AnnotationHandlerBuilder):
     def __init__(self):
-        self._class_annotations = list()
-        self._method_annotations = list()
+        self._class_annotations = []
+        self._method_annotations = []
 
     def add_annotation(self, annotation, *args_, **kwargs):
         if kwargs.get("is_class", False):
@@ -93,7 +93,7 @@ class MethodAnnotation(interfaces.Annotation):
         except IndexError:
             return False
         else:
-            return is_consumer_class and not (kwargs or args_[1:])
+            return is_consumer_class and not kwargs and not args_[1:]
 
     def _modify_request_definition(self, builder, kwargs):
         builder.method_handler_builder.add_annotation(self, **kwargs)
@@ -445,12 +445,11 @@ class args(MethodAnnotation):
         self._more_annotations = more_annotations
 
     def __call__(self, obj):
-        if inspect.isfunction(obj):
-            handler = arguments.ArgumentAnnotationHandlerBuilder.from_func(obj)
-            self._helper(handler)
-            return obj
-        else:
+        if not inspect.isfunction(obj):
             return super(args, self).__call__(obj)
+        handler = arguments.ArgumentAnnotationHandlerBuilder.from_func(obj)
+        self._helper(handler)
+        return obj
 
     def _helper(self, builder):
         builder.set_annotations(self._annotations, **self._more_annotations)

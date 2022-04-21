@@ -69,7 +69,7 @@ class Map(CompositeKey):
     """
 
     def convert(self, converter, value):
-        return dict((k, converter(value[k])) for k in value)
+        return {k: converter(value[k]) for k in value}
 
 
 class Sequence(CompositeKey):

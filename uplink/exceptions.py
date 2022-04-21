@@ -13,7 +13,7 @@ class UplinkBuilderError(Error):
     message = "`%s`: %s"
 
     def __init__(self, class_name, definition_name, error):
-        fullname = class_name + "." + definition_name
+        fullname = f"{class_name}.{definition_name}"
         self.message = self.message % (fullname, error)
         self.error = error
 

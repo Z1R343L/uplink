@@ -45,12 +45,11 @@ class DictConverter(BaseTypeConverter, interfaces.Converter):
         self._value_converter = chain(self._value_type) or self._value_type
 
     def convert(self, value):
-        if isinstance(value, abc.Mapping):
-            key_c, val_c = self._key_converter, self._value_converter
-            return dict((key_c(k), val_c(value[k])) for k in value)
-        else:
+        if not isinstance(value, abc.Mapping):
             # TODO: Handle the case where the value is not a mapping.
             return self._value_converter(value)
+        key_c, val_c = self._key_converter, self._value_converter
+        return {key_c(k): val_c(value[k]) for k in value}
 
 
 class _TypeProxy(object):

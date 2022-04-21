@@ -25,8 +25,7 @@ class RateLimitExceeded(RuntimeError):
 
     def __init__(self, calls, period):
         super(RateLimitExceeded, self).__init__(
-            "Exceeded rate limit of [%s] calls every [%s] seconds."
-            % (calls, period)
+            f"Exceeded rate limit of [{calls}] calls every [{period}] seconds."
         )
 
 

@@ -29,8 +29,7 @@ class CompositeRequestTemplate(RequestTemplate):
             transition = caller(template)
             if transition is not None:
                 return transition
-        else:
-            return caller(self._fallback)
+        return caller(self._fallback)
 
     def __init__(self, templates, fallback=__FALLBACK):
         self._templates = list(templates)

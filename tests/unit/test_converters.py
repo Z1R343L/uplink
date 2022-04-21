@@ -291,7 +291,7 @@ class TestMarshmallowConverter(object):
         converter.marshmallow = None
         register_ = []
         converter.register_if_necessary(register_.append)
-        assert register_ == []
+        assert not register_
 
         # Rewire
         converters.MarshmallowConverter.marshmallow = old_marshmallow
@@ -314,8 +314,8 @@ class TestMap(object):
 
     def test_eq(self):
         assert converters.keys.Map(0) == converters.keys.Map(0)
-        assert not (converters.keys.Map(1) == converters.keys.Map(0))
-        assert not (converters.keys.Map(1) == 1)
+        assert converters.keys.Map(1) != converters.keys.Map(0)
+        assert converters.keys.Map(1) != 1
 
 
 class TestSequence(object):
@@ -349,8 +349,8 @@ class TestSequence(object):
 
     def test_eq(self):
         assert converters.keys.Sequence(0) == converters.keys.Sequence(0)
-        assert not (converters.keys.Sequence(1) == converters.keys.Sequence(0))
-        assert not (converters.keys.Sequence(1) == 1)
+        assert converters.keys.Sequence(1) != converters.keys.Sequence(0)
+        assert converters.keys.Sequence(1) != 1
 
 
 class TestIdentity(object):
